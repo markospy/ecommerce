@@ -1,20 +1,26 @@
+import { useState } from "react";
 import { Navbar } from './components/NavBar';
 import { ProductCard} from './components/ProductCard';
 import { useFetchProducts } from './hooks/useFetchProduct';
 
 
 function App() {
-  const products = useFetchProducts();
+  const [priceMax, setPriceMax] = useState<number>(1000);
+  const [productName, setProductName] = useState<string>('');
 
-  function handleSearch(value: string) {
-    products.filter(product => {product.title.includes(value)})
-  };
 
-  console.log(products)
+  const products = useFetchProducts(priceMax, productName);
+
+
+
 
   return (
     <div className='flex flex-col gap-16 bg-gray-100 dark:bg-gray-800'>
-      <Navbar handleClick={handleSearch}/>
+      <Navbar
+        price={priceMax}
+        setPrice={setPriceMax}
+        setProduct={setProductName}
+      />
       <div className='flex flex-wrap justify-center gap-3'>
         {products.map(product => <ProductCard key={product.id} {...product} />)}
       </div>

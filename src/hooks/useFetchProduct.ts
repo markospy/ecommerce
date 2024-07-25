@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Product } from '../components/ProductCard';
 
 
-export function useFetchProducts() {
+export function useFetchProducts(priceFilter: number, productFilter: string) {
     const [products, setProducts] = useState<Product[]>([]);
 
     const getProducts = async (offset?:number, limit?:number) => {
@@ -22,8 +22,21 @@ export function useFetchProducts() {
       };
 
     useEffect(() => {
-      getProducts().then(products => setProducts(products));
+      getProducts()
+      .then(products => setProducts(products))
     }, []);
+
+    useEffect(() => {
+      getProducts()
+      .then(products => products.filter((product:Product) => product.price <= priceFilter))
+      .then(products => setProducts(products))
+    }, [priceFilter])
+
+    useEffect(() => {
+      getProducts()
+      .then(products => products.filter((product:Product) => product.title.toLowerCase().includes(productFilter.toLowerCase())))
+      .then(products => setProducts(products))
+    }, [productFilter])
 
     return products;
   }

@@ -1,9 +1,12 @@
 import { IcOutlineSearch } from "./svgs/Search"
-import { useState, useRef} from "react";
+import { useRef} from "react";
 
-export function Navbar({ handleClick }: { handleClick: (event: string) => void }) {
+export function Navbar({ price, setPrice, setProduct}:
+	{ price:number,
+	  setPrice: (value: number) => void,
+	  setProduct: (value: string) => void
+	}) {
 
-  const [priceMax, setPriceMax] = useState<number>(500);
   const refSearch = useRef<string>('');
   const refLabelPrice = useRef(null);
 
@@ -12,7 +15,7 @@ export function Navbar({ handleClick }: { handleClick: (event: string) => void }
 			<div className="flex h-1/2 w-10/12 items-center justify-start pt-6">
 				<img src="/shopee.svg" alt="Logo de la tienda" className="size-24 w-1/12" />
 				<div className="relative flex w-11/12 justify-center">
-					<IcOutlineSearch className="absolute right-64 h-10 w-14 cursor-pointer rounded-r-md bg-orange-500 p-2 text-gray-900" onClick={() =>  handleClick(refSearch.current)}/>
+					<IcOutlineSearch className="absolute right-64 h-10 w-14 cursor-pointer rounded-r-md bg-orange-500 p-2 text-gray-900" onClick={() =>  setProduct(refSearch.current)}/>
 					<input
 						type="text"
 						placeholder="¿Qué estás buscando?"
@@ -25,10 +28,10 @@ export function Navbar({ handleClick }: { handleClick: (event: string) => void }
 			<div className="flex w-full items-center justify-center gap-2 bg-transparent">
 				<div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-50">
 					<label htmlFor="#max-price" className="ml-4 w-48 font-semibold text-gray-700 drop-shadow-lg">Precio máximo</label>
-					<input type="range" id="max-price" min="0" max="1000" step="10" value={priceMax} onChange={(e) => {setPriceMax(Number(e.target.value))}} className="h-2 w-full appearance-none rounded-lg bg-orange-500 shadow-md"/>
+					<input type="range" id="max-price" min="10" max="1000" step="10" value={price} onChange={(e) => {setPrice(Number(e.target.value))}} className="h-2 w-full appearance-none rounded-lg bg-orange-500 shadow-md"/>
 				</div>
 				$
-				<input ref={refLabelPrice} type="number" value={priceMax} onChange={(e) => { Number(e.target.value)<=1000 && setPriceMax(Number(e.target.value))}} className="block h-7 w-20 rounded-md border-0 font-semibold text-gray-700 shadow-md ring-1 ring-inset ring-orange-500 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"/>
+				<input ref={refLabelPrice} type="number" value={price} onChange={(e) => { Number(e.target.value)<=1000 && setPrice(Number(e.target.value))}} className="block h-7 w-20 rounded-md border-0 font-semibold text-gray-700 shadow-md ring-1 ring-inset ring-orange-500 focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm sm:leading-6"/>
 			</div>
     </div>
   );
