@@ -27,16 +27,23 @@ export function useFetchProducts(priceFilter: number, productFilter: string) {
     }, []);
 
     useEffect(() => {
-      getProducts()
-      .then(products => products.filter((product:Product) => product.price <= priceFilter))
-      .then(products => setProducts(products))
-    }, [priceFilter])
+      async function fetchProducts() {
+        try {
+          let products = await getProducts()
+          if (priceFilter) {
+            products = products.filter((product: Product) => product.price <= priceFilter);
+          }
+          if (productFilter) {
+            products = products.filter((product: Product) => product.title.toLowerCase().includes(productFilter.toLowerCase()));
+          }
+          setProducts(products);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchProducts();
+    }, [priceFilter, productFilter])
 
-    useEffect(() => {
-      getProducts()
-      .then(products => products.filter((product:Product) => product.title.toLowerCase().includes(productFilter.toLowerCase())))
-      .then(products => setProducts(products))
-    }, [productFilter])
 
     return products;
   }
