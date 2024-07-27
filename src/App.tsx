@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navbar } from './components/NavBar';
-import { ProductCard} from './components/ProductCard';
-import { useFetchProducts } from './hooks/useFetchProduct';
+import { ProductCard, Product } from './components/ProductCard';
+import { useFetchProducts, getProducts } from './hooks/useFetchProduct';
 
 
 function App() {
@@ -9,9 +9,26 @@ function App() {
   const [productName, setProductName] = useState<string>('');
 
 
-  const products = useFetchProducts(priceMax, productName);
+  const [products, setProducts] = useFetchProducts();
 
 
+  const handleFilter = () => {
+    async function fetchProducts() {
+      try {
+        let products = await getProducts()
+        if (priceMax) {
+          products = products.filter((product: Product) => product.price <= priceMax);
+        }
+        if (productName) {
+          products = productName ? products.filter((product: Product) => product.title.toLowerCase().includes(productName.toLowerCase())) : products;
+        }
+        setProducts(products);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchProducts();
+  }
 
 
   return (
@@ -20,6 +37,7 @@ function App() {
         price={priceMax}
         setPrice={setPriceMax}
         setProduct={setProductName}
+        handleClick={handleFilter}
       />
       <div className='flex flex-wrap justify-center gap-3'>
         {products.map(product => <ProductCard key={product.id} {...product} />)}
